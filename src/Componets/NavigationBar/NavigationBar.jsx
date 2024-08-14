@@ -1,7 +1,49 @@
-import { NavLink } from "react-router-dom";
+import { useContext } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../Providers/AuthProvider";
+import Swal from "sweetalert2";
 
 
 const NavigationBar = () => {
+
+  const {user,loading, LogOut} = useContext(AuthContext);
+
+ 
+
+//   if(loading){
+//     return <>
+//     <span className="loading loading-spinner text-primary"></span>
+// <span className="loading loading-spinner text-secondary"></span>
+// <span className="loading loading-spinner text-accent"></span>
+// <span className="loading loading-spinner text-neutral"></span>
+// <span className="loading loading-spinner text-info"></span>
+//     </>
+  // }
+
+  const navigate = useNavigate();
+
+  // handleLogOut 
+  const handleLogOut =()=>{
+      LogOut()
+      .then((result)=>{
+
+     if(result){
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "LogOut Successful",
+        showConfirmButton: false,
+        timer: 1500
+      });
+
+      navigate('/')
+     }
+
+      })
+      .catch(error=>{
+        console.log(error);
+      })
+  }
 
     const Pages = <>
     
@@ -52,9 +94,16 @@ const NavigationBar = () => {
     </ul>
   </div>
 
-  <div className="navbar-end">
-    <a className="btn">Login</a>
-  </div>
+  {user && <div className="navbar-end">
+
+   <Link to='/login'> <a className="btn">LogOut</a></Link>
+  </div>}
+
+  {!user && <div className="navbar-end">
+
+   <Link to='/login'> <button onClick={handleLogOut} className="btn">Login</button></Link>
+  </div>}
+
 </div>
 </div>
         
