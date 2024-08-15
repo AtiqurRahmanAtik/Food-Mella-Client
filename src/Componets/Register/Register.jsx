@@ -1,26 +1,29 @@
 import React, { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FcGoogle } from "react-icons/fc";
 import { AuthContext } from '../../Providers/AuthProvider';
 import Swal from 'sweetalert2';
 
 const Register = () => {
     
-    const {singUp,  googleLogin} = useContext(AuthContext);
+    const {user,singUp,  googleLogin} = useContext(AuthContext);
     
     const navigate = useNavigate();
-
+    let location = useLocation();
+    
+    let from = location.state?.from?.pathname || "/";
 
 
     // Handle Register
     const handleLogin= (e)=>{
         e.preventDefault();
-        const from = e.target;
-        const name = from.name.value;
-        const email = from.email.value;
-        const password = from.password.value;
+        const form = e.target;
+        const name = form.name.value;
+        const email = form.email.value;
+        const photo= form.photo.value;
+        const password = form.password.value;
 
-        const RegisterInfo = {name, email, password};
+        const RegisterInfo = {name, email, password,photo};
         console.log(RegisterInfo);
 
 
@@ -28,6 +31,23 @@ const Register = () => {
         singUp(email,password)
         .then(result=>{
             console.log(result)
+               // updateProfile
+               updateProfileUser(name,photo)
+               .then(()=>{
+                 Swal.fire({
+                   position: "top-end",
+                   icon: "success",
+                   title: "Register Successful",
+                   showConfirmButton: false,
+                   timer: 1500
+                 });
+               })
+               .catch(error=>{
+                 console.log(error);
+               })
+
+              //  navigate to home page
+            navigate(from, { replace: true });
         })
         .catch(error=> {
             console.log(error);
@@ -42,15 +62,8 @@ const Register = () => {
         googleLogin()
         .then(result=>{
             console.log(result.user);
-            Swal.fire({
-                position: "top-end",
-                icon: "success",
-                title: "Register Successful",
-                showConfirmButton: false,
-                timer: 1500
-              });
 
-            navigate('/');
+              navigate(from, { replace: true });
         })
         .catch(error=> {
             console.log(error);
@@ -88,6 +101,15 @@ const Register = () => {
           </label>
 
           <input type="email" placeholder="email" name='email' className="input input-bordered" required />
+
+        </div>
+
+        <div className="form-control">
+          <label className="label">
+            <span className="label-text">PhotURL</span>
+          </label>
+
+          <input type="text" placeholder="photo" name='photo' className="input input-bordered" required />
 
         </div>
 

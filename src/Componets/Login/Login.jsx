@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { useContext } from "react";
 import { AuthContext } from "../../Providers/AuthProvider";
@@ -6,6 +6,10 @@ import { AuthContext } from "../../Providers/AuthProvider";
 const Login = () => {
 
     const {singIn}= useContext(AuthContext);
+    let navigate = useNavigate();
+    const location = useLocation();
+
+    let from = location.state?.from?.pathname || "/";
 
     // Handle Login
     const handleLogin = (e)=> {
@@ -22,6 +26,7 @@ const Login = () => {
         singIn(email,password)
         .then(result=>{
             console.log(result);
+            navigate(from, { replace: true });
         })
         .catch(error=>{
             console.log(error);

@@ -6,28 +6,19 @@ import Swal from "sweetalert2";
 
 const NavigationBar = () => {
 
-  const {user,loading, LogOut} = useContext(AuthContext);
-
+  const {user, LogOut} = useContext(AuthContext);
+  const navigate = useNavigate();
  
 
-//   if(loading){
-//     return <>
-//     <span className="loading loading-spinner text-primary"></span>
-// <span className="loading loading-spinner text-secondary"></span>
-// <span className="loading loading-spinner text-accent"></span>
-// <span className="loading loading-spinner text-neutral"></span>
-// <span className="loading loading-spinner text-info"></span>
-//     </>
-  // }
 
-  const navigate = useNavigate();
+ 
 
   // handleLogOut 
   const handleLogOut =()=>{
       LogOut()
       .then((result)=>{
 
-     if(result){
+    
       Swal.fire({
         position: "top-end",
         icon: "success",
@@ -36,8 +27,8 @@ const NavigationBar = () => {
         timer: 1500
       });
 
-      navigate('/')
-     }
+      navigate('/');
+  
 
       })
       .catch(error=>{
@@ -96,12 +87,35 @@ const NavigationBar = () => {
 
   {user && <div className="navbar-end">
 
-   <Link to='/login'> <a className="btn">LogOut</a></Link>
+   
+
+   <div className="dropdown dropdown-end">
+{ user && <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+    <div className="w-10 rounded-full ">
+      <img 
+        alt="Tailwind CSS Navbar component"
+        src={`${user?.photoURL}`} />
+       
+    </div>
+   
+  </div>}
+
+      <ul
+        tabIndex={0}
+        className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+      
+        <li><button> <span>{user?.displayName}</span></button></li>
+        <li><button onClick={handleLogOut} className="btn">LogOut</button></li>
+      </ul>
+    </div>
+
+
+
   </div>}
 
   {!user && <div className="navbar-end">
 
-   <Link to='/login'> <button onClick={handleLogOut} className="btn">Login</button></Link>
+   <Link to='/login'> <a  className="btn">Login</a></Link>
   </div>}
 
 </div>
